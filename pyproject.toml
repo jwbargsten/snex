@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "extract-snippets"
+version = "0.1.0"
+description = ""
+authors = ["Joachim Bargsten <jw@bargsten.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^7.1.2"
+pyhocon = "^0.3.57"
+pystache = "^0.5.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+coverage = {extras = ["toml"], version = "^5.4"}
+pytest-cov = "^2.11.1"
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.run]
+branch = true
+source = ["extract_snippets"]
+
+[tool.poetry.scripts]
+extract-snippets = "extract_snippets.cli:main"
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
