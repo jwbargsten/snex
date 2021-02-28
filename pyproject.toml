@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "snex"
 version = "2021.2.28"
-description = ""
+description = "snex - snippet extractor"
 authors = ["Joachim Bargsten <jw@bargsten.org>"]
+homepage = "https://github.com/jwbargsten/snex/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
