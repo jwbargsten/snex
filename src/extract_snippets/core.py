@@ -95,9 +95,11 @@ def extract_from_file(f, conf):
                 continue
 
             if match := re.search(snippet_start_re, line):
-                params = util.to_dict(match.group(1).strip())
-                if not params["name"]:
-                    raise KeyError("name key not set")
+                try:
+                    params = util.parse_params(match.group(1))
+                except Exception as ex:
+                    logger.error(f"could not parse snippet params: {line} in file {f}")
+                    raise ex
                 in_snippet = True
             if not in_snippet:
                 continue

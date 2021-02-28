@@ -7,12 +7,14 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def to_dict(snippet_params):
-    d = {}
-    for kv in re.split(r"\s+", snippet_params):
+def parse_params(snippet_param_match):
+    params = {}
+    for kv in re.split(r"\s+", snippet_param_match.strip()):
         (k, v) = kv.split("=", 2)
-        d[k.strip()] = v
-    return d
+        params[k.strip()] = v
+    if not params["name"]:
+        raise KeyError("name key not set")
+    return params
 
 
 def find_files(root, glob):
