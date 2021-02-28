@@ -24,19 +24,20 @@ def extract(base_path=None, out_path=None):
             out_path = base_path / out_path
         logger.info(f"working dir: {str(base_path)}")
         logger.info(f"output dir: {str(out_path)}")
-        out_path.mkdir(exist_ok=True)
+        out_path.mkdir(exist_ok=True, parents=True)
 
         out_ext = conf["output_ext"]
 
         snippets = (
             snippet
-            for f in util.find_files(conf["root"], conf["glob"])
+            for f in util.find_files(base_path / conf["root"], conf["glob"])
             for snippet in core.extract_from_file(f, conf)
         )
         for snippet in snippets:
             no_snippets = False
             dst = out_path / (snippet.name + out_ext)
-            logger.info(f"{snippet.origin}:{snippet.name} -> {dst}")
+            origin = str(Path(snippet.origin).relative_to(base_path))
+            logger.info(f"{origin}:{snippet.name} -> {dst}")
             res = core.render_snippet(conf["output_template"], {**conf, **snippet.params}, snippet.body)
             dst.write_text(res)
     if no_snippets:
