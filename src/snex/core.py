@@ -10,6 +10,7 @@ DEFAULT = {
     # :snippet name=global-default-config
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
     "output_path": "extracted",
+    "line_prefix": "",
     "comment_prefix": "# ",
     "comment_suffix": "",
     "snippet_start": ":snippet",
@@ -23,7 +24,7 @@ DEFAULT = {
 
 class Snippet:
     @classmethod
-    def from_raw_data(cls, params, data, origin=None):
+    def from_raw_data(cls, params, data, origin=None, prefix=""):
         (head,) = data[:1]
         (tail,) = data[-1:]
         body = data[1:-1]
@@ -33,6 +34,7 @@ class Snippet:
         body = (line[idlvl:] for line in body)
         body = dropwhile(util.is_empty, body)
         body = util.dropwhile_right(util.is_empty, list(body))
+        body = (prefix + line for line in body)
 
         return cls(params=params, head=head.lstrip(), body=list(body), tail=tail.lstrip(), origin=origin)
 
@@ -68,6 +70,8 @@ def get_configs(conf):
 def extract_from_file(f, conf):
     comment_prefix = re.escape(conf["comment_prefix"])
     comment_suffix = re.escape(conf["comment_suffix"])
+
+    line_prefix = conf["line_prefix"]
 
     cloak_start = re.escape(conf["cloak_start"])
     cloak_end = re.escape(conf["cloak_end"])
@@ -109,7 +113,7 @@ def extract_from_file(f, conf):
             data.append(line.rstrip("\n"))
             if re.search(snippet_end_re, line):
                 in_snippet = False
-                snippets.append(Snippet.from_raw_data(params, data, origin=f))
+                snippets.append(Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix))
                 data = []
                 params = {}
     return snippets

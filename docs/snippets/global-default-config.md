@@ -3,6 +3,7 @@
 ```python
 "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
 "output_path": "extracted",
+"line_prefix": "",
 "comment_prefix": "# ",
 "comment_suffix": "",
 "snippet_start": ":snippet",
