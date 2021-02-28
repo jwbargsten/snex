@@ -2,8 +2,8 @@ __version__ = "0.1.0"
 
 import logging
 from pyhocon import ConfigFactory
-import extract_snippets.core as core
-import extract_snippets.util as util
+import snex.core as core
+import snex.util as util
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ def extract(base_path=None, out_path=None):
     if base_path is None:
         base_path = Path()
 
-    conf_root = ConfigFactory.parse_file(base_path / "snippet.conf")
+    conf_root = ConfigFactory.parse_file(base_path / "snex.conf")
     no_snippets = True
     for conf_name, conf in core.get_configs(conf_root):
         logger.info(f"processing config {conf_name}")

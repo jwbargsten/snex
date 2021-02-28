@@ -10,4 +10,4 @@ test:
 build:
 	. .venv/bin/activate && poetry build
 run:
-	. .venv/bin/activate && poetry run extract-snippets
+	. .venv/bin/activate && poetry run snex

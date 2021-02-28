@@ -1,4 +1,4 @@
-from extract_snippets import __version__
+from snex import __version__
 
 
 def test_version():

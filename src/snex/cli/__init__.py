@@ -2,7 +2,7 @@ import click
 import logging
 from pathlib import Path
 
-import extract_snippets
+import snex
 log_dfmt = "%Y-%m-%d %H:%M:%S"
 log_fmt = "%(asctime)s - %(levelname)-8s - %(name)s.%(funcName)s: %(message)s"
 logging.basicConfig(level=logging.DEBUG, format=log_fmt, datefmt=log_dfmt)
@@ -18,7 +18,7 @@ def main(base_path, out_path):
     if out_path is not None:
         out_path = Path(out_path)
 
-    extract_snippets.extract(base_path, out_path)
+    snex.extract(base_path, out_path)
 
 
 if __name__ == "__main__":

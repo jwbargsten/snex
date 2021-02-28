@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "extract-snippets"
+name = "snex"
 version = "0.1.0"
 description = ""
 authors = ["Joachim Bargsten <jw@bargsten.org>"]
@@ -23,10 +23,10 @@ source = ["src"]
 
 [tool.coverage.run]
 branch = true
-source = ["extract_snippets"]
+source = ["snex"]
 
 [tool.poetry.scripts]
-extract-snippets = "extract_snippets.cli:main"
+snex = "snex.cli:main"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

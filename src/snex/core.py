@@ -2,11 +2,12 @@ import logging
 import pystache
 import re
 from itertools import dropwhile
-import extract_snippets.util as util
+import snex.util as util
 
 logger = logging.getLogger(__name__)
 
 DEFAULT = {
+    # :snippet name=global-default-config
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
     "output_path": "extracted",
     "comment_prefix": "# ",
@@ -16,6 +17,7 @@ DEFAULT = {
     "cloak_start": ":cloak",
     "cloak_end": ":endcloak",
     "output_ext": ".md",
+    # :endsnippet
 }
 
 
