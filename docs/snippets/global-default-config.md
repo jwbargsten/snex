@@ -1,3 +1,5 @@
+# Snippet global-default-config
+
 ```python
 "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
 "output_path": "extracted",
