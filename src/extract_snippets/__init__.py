@@ -19,9 +19,7 @@ def extract(base_path=None, out_path=None):
         logger.info(f"processing config {conf_name}")
 
         if out_path is None:
-            out_path = Path(conf["output_path"])
-        if not out_path.is_absolute():
-            out_path = base_path / out_path
+            out_path = base_path / Path(conf["output_path"])
         logger.info(f"working dir: {str(base_path)}")
         logger.info(f"output dir: {str(out_path)}")
         out_path.mkdir(exist_ok=True, parents=True)

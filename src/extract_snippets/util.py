@@ -18,7 +18,8 @@ def to_dict(snippet_params):
 def find_files(root, glob):
     logger.info(f"{root} -> {glob}")
     for p in Path(root).glob(glob):
-        yield p
+        if p.is_file():
+            yield p
 
 
 def det_indent_lvl(lines):
