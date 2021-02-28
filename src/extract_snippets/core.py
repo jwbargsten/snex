@@ -7,20 +7,21 @@ import extract_snippets.util as util
 logger = logging.getLogger(__name__)
 
 DEFAULT = {
-    "output_template": "```{{lang}}\n{{snippet}}\n```\n",
-    "output_dir": "extracted",
+    "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
+    "output_path": "extracted",
     "comment_prefix": "# ",
     "comment_suffix": "",
     "snippet_start": ":snippet",
     "snippet_end": ":endsnippet",
     "cloak_start": ":cloak",
     "cloak_end": ":endcloak",
+    "output_ext": ".md",
 }
 
 
 class Snippet:
     @classmethod
-    def from_raw_data(cls, params, data):
+    def from_raw_data(cls, params, data, origin=None):
         (head,) = data[:1]
         (tail,) = data[-1:]
         body = data[1:-1]
@@ -31,16 +32,21 @@ class Snippet:
         body = dropwhile(util.is_empty, body)
         body = util.dropwhile_right(util.is_empty, list(body))
 
-        return cls(params=params, head=head.lstrip(), body=list(body), tail=tail.lstrip())
+        return cls(params=params, head=head.lstrip(), body=list(body), tail=tail.lstrip(), origin=origin)
 
-    def __init__(self, params=None, head=None, body=None, tail=None):
+    @property
+    def name(self):
+        return self.params["name"]
+
+    def __init__(self, params=None, head=None, body=None, tail=None, origin=None):
         self.params = params
         self.head = head
         self.body = body
         self.tail = tail
+        self.origin = origin
 
     def __repr__(self):
-        return f"Snippet({self.params!r}, {self.head!r}, {self.body!r}, {self.tail!r})"
+        return f"Snippet({self.params!r}, {self.head!r}, {self.body!r}, {self.tail!r}, {self.origin!r})"
 
 
 def render_snippet(template, params, body):
@@ -52,7 +58,9 @@ def get_configs(conf):
     default = configs["default"] if "default" in configs else None
     for name in [n for n in configs if not n == "default"]:
         c = util.merge_with_default_conf(configs[name], default, global_default=DEFAULT)
-        yield c
+        # prevent defining a global name for all snippets in the config
+        c.pop("name", None)
+        yield (name, c)
 
 
 def extract_from_file(f, conf):
@@ -97,7 +105,7 @@ def extract_from_file(f, conf):
             data.append(line.rstrip("\n"))
             if re.search(snippet_end_re, line):
                 in_snippet = False
-                snippets.append(Snippet.from_raw_data(params, data))
+                snippets.append(Snippet.from_raw_data(params, data, origin=f))
                 data = []
                 params = {}
     return snippets

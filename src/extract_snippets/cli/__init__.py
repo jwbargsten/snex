@@ -12,12 +12,13 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.argument('base_path', default=".", type=click.Path(exists=True))
-@click.argument('out_base_path', type=click.Path(), required=False)
-def main(base_path, out_base_path):
-    if out_base_path is None:
-        out_base_path = base_path
-    logger.info(f"{base_path=}, {out_base_path=}")
-    extract_snippets.extract(Path(base_path), Path(out_base_path))
+@click.argument('out_path', type=click.Path(), required=False)
+def main(base_path, out_path):
+    base_path = Path(base_path)
+    if out_path is not None:
+        out_path = Path(out_path)
+
+    extract_snippets.extract(base_path, out_path)
 
 
 if __name__ == "__main__":
