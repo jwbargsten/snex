@@ -17,28 +17,34 @@ DEFAULT = {
 }
 
 
+class Snippet:
+    def __init__(self, params=None, head=None, tail=None, body=None):
+        self.params = params
+        self.head = head
+        self.tail = tail
+        self.body = body
+
+
 def extract():
     conf = ConfigFactory.parse_file("snippet.conf")
     for c in _get_configs(conf):
         c.pop("name", None)
         snippets = (
-            (s[0], sanitize_snippet(s[1]))
+            create_snippet(params, snippet_data)
             for f in _find_files(c["root"], c["glob"])
-            for s in _extract_from_file(f, c)
+            for params, snippet_data in _extract_from_file(f, c)
         )
         out = Path(c["output_dir"])
         out.mkdir(exist_ok=True)
-        for (params, snippet) in snippets:
-            dest = out / (params["name"] + ".md")
+        for s in snippets:
+            dest = out / (s.params["name"] + ".md")
             logger.info(dest)
-            logger.info(params)
-            res = render_snippet(c["output_template"], {**c, **params}, snippet)
+            res = render_snippet(c["output_template"], {**c, **s.params}, s.body)
             dest.write_text(res)
 
 
-def render_snippet(template, params, snippet):
-    p = {**params, **{"snippet": "\n".join(snippet[1])}}
-    return pystache.render(template, p)
+def render_snippet(template, params, body):
+    return pystache.render(template, {**params, **{"snippet": "\n".join(body)}})
 
 
 def _get_configs(conf):
@@ -46,25 +52,28 @@ def _get_configs(conf):
     default = configs["default"] if "default" in configs else None
     for name in [n for n in configs if not n == "default"]:
         c = _merge_default(configs[name], default)
-        # logger.info(f"config: {c}")
         yield c
 
     # EXTRACT name=hans >>>
 
 
-def sanitize_snippet(s):
+def create_snippet(params, data):
     def is_empty(x):
         not bool(x)
 
-    (head,) = s[:1]
-    (tail,) = s[-1:]
-    body = s[1:-1]
+    (head,) = data[:1]
+    (tail,) = data[-1:]
+    body = data[1:-1]
+
     idlvl = indent_lvl(body)
-    logger.info(f"sanitize {idlvl=}")
+
     body = (line[idlvl:] for line in body)
     body = dropwhile(is_empty, body)
     body = dropwhile_right(is_empty, list(body))
-    return (head.lstrip(), list(body), tail.lstrip())
+
+    return Snippet(
+        params=params, head=head.lstrip(), body=list(body), tail=tail.lstrip()
+    )
 
 
 def indent_lvl(lines):
