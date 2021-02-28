@@ -31,3 +31,5 @@ extract-snippets = "extract_snippets.cli:main"
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
+[tool.black]
+line-length = 110
