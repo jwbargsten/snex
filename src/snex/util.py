@@ -7,14 +7,23 @@ import re
 logger = logging.getLogger(__name__)
 
 
+VALID_PARAM_KEYS = ["name", "lang"]
+VALID_NAME_RE = r"[^-0-9A-Za-z_.%~äßöüÄ§ÖÜ€áàâãéêíóôõúçÁÀÂÃÉÊÍÓÔÕÚÇ]+"
+
+
 def parse_params(snippet_param_match):
     params = {}
     for kv in re.split(r"\s+", snippet_param_match.strip()):
         (k, v) = kv.split("=", 2)
         params[k.strip()] = v
-    if not params["name"]:
-        raise KeyError("name key not set")
     return params
+
+
+def sanitize_params(params):
+    if not ("name" in params and params["name"]):
+        raise KeyError("name key not set")
+    params["name"] = re.sub(VALID_NAME_RE, "_", params["name"])
+    return {k: v for k, v in params.items() if k in VALID_PARAM_KEYS}
 
 
 def find_files(root, glob):

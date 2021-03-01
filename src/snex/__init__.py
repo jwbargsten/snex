@@ -1,4 +1,4 @@
-__version__ = "2021.2.28.1"
+__version__ = "2021.2.28.2"
 
 import logging
 from pyhocon import ConfigFactory
