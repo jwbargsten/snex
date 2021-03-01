@@ -25,6 +25,8 @@ comment prefix):
 - Empty lines after the start and before the end are removed.
 - _A snippet name is mandatory._
 - You can also overwrite the `lang` config to use a different language for this snippet.
+- The snippet `name` is sanitized to prevent malicious code to overwrite arbitrary files
+  on your system.
 
 ## Setup
 
