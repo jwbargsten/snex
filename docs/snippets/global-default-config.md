@@ -2,6 +2,7 @@
 
 ```python
 "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
+"valid_param_keys": [ "name", "lang" ],
 "output_path": "extracted",
 "line_prefix": "",
 "comment_prefix": "# ",

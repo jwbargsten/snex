@@ -24,9 +24,33 @@ comment prefix):
 
 - Empty lines after the start and before the end are removed.
 - _A snippet name is mandatory._
-- You can also overwrite the `lang` config to use a different language for this snippet.
 - The snippet `name` is sanitized to prevent malicious code to overwrite arbitrary files
   on your system.
+
+### Advanced snippet tagging
+
+You can also overwrite the `lang` config to use a different language for this snippet.
+
+```
+# :snippet snippet-name-without-whitespace lang: scala
+```
+
+Everything after the snippet name is parsed as YAML dict:
+`{ $text_after_snippet_name }`, e.g. `lang: scala, other_param: "hello world"` is parsed as `{ lang: scala, other_param: "hello world" }` YAML.
+
+This means that you can also customise your parameter substitutions with a config like:
+
+```
+config {
+  default {
+    "output_template": "```{{lang}} - {{other_param}}\n{{{snippet}}}\n```\n",
+    "valid_param_keys": [ "lang", "name", "other_param" ]
+    ...
+  }
+}
+```
+
+The output template is parsed as [mustache template](https://mustache.github.io/).
 
 ## Setup
 

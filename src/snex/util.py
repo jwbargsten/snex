@@ -14,7 +14,6 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-VALID_PARAM_KEYS = ["name", "lang"]
 VALID_NAME_RE = r"[^-0-9A-Za-z_.%~äßöüÄ§ÖÜ€áàâãéêíóôõúçÁÀÂÃÉÊÍÓÔÕÚÇ]+"
 
 
@@ -34,11 +33,11 @@ def construct_params(snippet_param_match, path, lnum ):
 def sanitize_for_file_name(v):
     return re.sub(VALID_NAME_RE, "-", v)
 
-def sanitize_params(params):
+def sanitize_params(params, valid_keys):
     if not ("name" in params and params["name"]):
         raise KeyError("name key not set")
     params["name"] = sanitize_for_file_name(params["name"])
-    return {k: v for k, v in params.items() if k in VALID_PARAM_KEYS}
+    return {k: v for k, v in params.items() if k in valid_keys}
 
 
 def find_files(root, glob):

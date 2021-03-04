@@ -7,8 +7,9 @@ import snex.util as util
 logger = logging.getLogger(__name__)
 
 DEFAULT = {
-    # :snippet global-default-config lang: python, name: abc
+    # :snippet global-default-config lang: python
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
+    "valid_param_keys": [ "name", "lang" ],
     "output_path": "extracted",
     "line_prefix": "",
     "comment_prefix": "# ",
@@ -105,7 +106,7 @@ def extract_from_file(f, conf):
             if match := re.search(snippet_start_re, line):
                 try:
                     params = util.construct_params(match.group(1), f, lnum)
-                    params = util.sanitize_params(params)
+                    params = util.sanitize_params(params, conf["valid_param_keys"])
                 except Exception as ex:
                     logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
                     raise ex
