@@ -10,4 +10,4 @@ test:
 build:
 	. .venv/bin/activate && poetry build
 run:
-	. .venv/bin/activate && poetry run snex
+	poetry run snex --config_file ./snex.repo.conf

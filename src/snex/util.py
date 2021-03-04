@@ -30,8 +30,10 @@ def construct_params(snippet_param_match, path, lnum ):
     return x
 
 
+# :snippet def-sanitize-for-filename
 def sanitize_for_file_name(v):
     return re.sub(VALID_NAME_RE, "-", v)
+# :endsnippet
 
 def sanitize_params(params, valid_keys):
     if not ("name" in params and params["name"]):
