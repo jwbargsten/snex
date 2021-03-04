@@ -4,6 +4,13 @@ from pathlib import Path
 import logging
 import re
 
+from yaml import load, dump
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 logger = logging.getLogger(__name__)
 
 
@@ -11,18 +18,26 @@ VALID_PARAM_KEYS = ["name", "lang"]
 VALID_NAME_RE = r"[^-0-9A-Za-z_.%~äßöüÄ§ÖÜ€áàâãéêíóôõúçÁÀÂÃÉÊÍÓÔÕÚÇ]+"
 
 
-def parse_params(snippet_param_match):
-    params = {}
-    for kv in re.split(r"\s+", snippet_param_match.strip()):
-        (k, v) = kv.split("=", 2)
-        params[k.strip()] = v
-    return params
+def construct_params(snippet_param_match, path, lnum ):
+    data = re.split(r"\s+", snippet_param_match.strip(), maxsplit=1)
+    params = { "path": str(path), "lnum": lnum }
+    if data and data[0]:
+        params["name"] = data[0]
+    else:
+        params["name"] = f"{str(path)}-{lnum}"
 
+    extra = load("{ " + data[1] + " }", Loader=Loader) if len(data) > 1 else { }
+    x = {**extra, **params}
+    return x
+
+
+def sanitize_for_file_name(v):
+    return re.sub(VALID_NAME_RE, "-", v)
 
 def sanitize_params(params):
     if not ("name" in params and params["name"]):
         raise KeyError("name key not set")
-    params["name"] = re.sub(VALID_NAME_RE, "_", params["name"])
+    params["name"] = sanitize_for_file_name(params["name"])
     return {k: v for k, v in params.items() if k in VALID_PARAM_KEYS}
 
 

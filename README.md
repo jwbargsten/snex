@@ -14,7 +14,7 @@ Let's assume that you have a project in `/path/to/your/project`. You navigate to
 region where you want to extract a snippet and tag it as follows (`# ` is regarded as
 comment prefix):
 
-    # :snippet name=snippet-name-without-whitespace
+    # :snippet snippet-name-without-whitespace
 
     def foobar():
        doit()

@@ -7,7 +7,7 @@ import snex.util as util
 logger = logging.getLogger(__name__)
 
 DEFAULT = {
-    # :snippet name=global-default-config
+    # :snippet global-default-config lang: python, name: abc
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
     "output_path": "extracted",
     "line_prefix": "",
@@ -41,6 +41,7 @@ class Snippet:
     @property
     def name(self):
         return self.params["name"]
+
 
     def __init__(self, params=None, head=None, body=None, tail=None, origin=None):
         self.params = params
@@ -80,7 +81,7 @@ def extract_from_file(f, conf):
 
     snippet_start = re.escape(conf["snippet_start"])
     snippet_end = re.escape(conf["snippet_end"])
-    snippet_start_re = f"^\\s*{comment_prefix}{snippet_start} (.*){comment_suffix}$"
+    snippet_start_re = f"^\\s*{comment_prefix}{snippet_start}(.*){comment_suffix}$"
     snippet_end_re = f"^\\s*{comment_prefix}{snippet_end}{comment_suffix}$"
 
     snippets = []
@@ -91,7 +92,8 @@ def extract_from_file(f, conf):
     params = {}
 
     with open(f, "r") as fd:
-        for line in fd:
+        for idx, line in enumerate(fd):
+            lnum = idx + 1
             if re.search(cloak_end_re, line):
                 cloaked = False
                 continue
@@ -102,9 +104,10 @@ def extract_from_file(f, conf):
 
             if match := re.search(snippet_start_re, line):
                 try:
-                    params = util.parse_params(match.group(1))
+                    params = util.construct_params(match.group(1), f, lnum)
+                    params = util.sanitize_params(params)
                 except Exception as ex:
-                    logger.error(f"could not parse snippet params: {line} in file {f}")
+                    logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
                     raise ex
                 in_snippet = True
             if not in_snippet:
