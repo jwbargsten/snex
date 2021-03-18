@@ -15,12 +15,16 @@ logger = logging.getLogger(__name__)
 @click.argument("base_path", default=".", type=click.Path(exists=True))
 @click.argument("out_path", type=click.Path(), required=False)
 @click.option("--config_file", type=click.Path(exists=True, dir_okay=False))
-def main(base_path, out_path, config_file):
+@click.option("--echo/--no-echo", default=False)
+def main(base_path, out_path, config_file, echo):
     base_path = Path(base_path)
     if out_path is not None:
         out_path = Path(out_path)
 
-    snex.extract(base_path, out_path, config_file)
+    snippets = snex.extract(base_path, out_path, config_file)
+    if echo:
+        for s in snippets:
+            print("\t".join([str(entry) for entry in s]))
 
 
 if __name__ == "__main__":

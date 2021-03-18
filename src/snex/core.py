@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 DEFAULT = {
     # :snippet global-default-config lang: python
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
-    "valid_param_keys": ["name", "lang"],
+    "valid_param_keys": ["name", "lang", "lnum"],
     "output_path": "extracted",
     "line_prefix": "",
     "comment_prefix": "# ",
@@ -42,6 +42,10 @@ class Snippet:
     @property
     def name(self):
         return self.params["name"]
+
+    @property
+    def line_number(self):
+        return self.params.get("lnum", -1)
 
     def __init__(self, params=None, head=None, body=None, tail=None, origin=None):
         self.params = params

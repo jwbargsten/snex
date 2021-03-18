@@ -16,6 +16,7 @@ def extract(base_path=None, out_path=None, config_file=None):
     if config_file is None:
         config_file = base_path / "snex.conf"
 
+    processed_snippets = []
     logger.info(f"using config file {str(config_file)}")
     conf_root = ConfigFactory.parse_file(config_file)
     no_snippets = True
@@ -40,7 +41,9 @@ def extract(base_path=None, out_path=None, config_file=None):
             dst = out_path / (snippet.name + out_ext)
             origin = str(Path(snippet.origin).relative_to(base_path))
             logger.info(f"{origin}:{snippet.name} -> {dst}")
+            processed_snippets.append((dst, snippet.name, origin, snippet.line_number))
             res = core.render_snippet(conf["output_template"], {**conf, **snippet.params}, snippet.body)
             dst.write_text(res)
     if no_snippets:
         logger.info("no snippets found")
+    return processed_snippets
