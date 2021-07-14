@@ -1,5 +1,7 @@
 # snex - snippet extractor
 
+[(Accompanying blog post)](https://bargsten.org/wissen/snex/)
+
 Extract snippets for blog posts or examples.
 
 How to use
@@ -36,11 +38,12 @@ You can also overwrite the `lang` config to use a different language for this sn
 ```
 
 Everything after the snippet name is parsed as YAML dict:
-`{ $text_after_snippet_name }`, e.g. `lang: scala, other_param: "hello world"` is parsed as `{ lang: scala, other_param: "hello world" }` YAML.
+`{ $text_after_snippet_name }`, e.g. `lang: scala, other_param: "hello world"` is parsed
+as `{ lang: scala, other_param: "hello world" }` YAML.
 
 This means that you can also customise your parameter substitutions with a config like:
 
-```
+````
 config {
   default {
     "output_template": "```{{lang}} - {{other_param}}\n{{{snippet}}}\n```\n",
@@ -48,7 +51,7 @@ config {
     ...
   }
 }
-```
+````
 
 The output template is parsed as [mustache template](https://mustache.github.io/).
 
@@ -68,6 +71,11 @@ create a snex.conf in the root directory of a project you want to create snippet
         root: "src"
         glob: "**/*.py"
       }
+      github {
+        comment_prefix: "# "
+        lang: "python"
+        path: "https://raw.githubusercontent.com/jwbargsten/snex/master/src/snex/core.py"
+      }
     }
 
 The config syntax is
@@ -80,10 +88,9 @@ You have 3 layers of settings in a section:
     `docs/snippets/global-default-config.md`
 2.  the config section `default` in your `snex.conf` file (which overwrites the global
     default).
-3.  the specific config section in your `snex.conf` (the section name is only for the
-    show, it does not have any effect. Only `default` is reserved.). The configuration
-    in a specific section overwrites the default section which overwrites the global
-    default config.
+3.  the specific config section in your `snex.conf` (the section name is prefix for
+    snippets `default` is reserved.). The configuration in a specific section overwrites
+    the default section which overwrites the global default config.
 
 ## Run
 
