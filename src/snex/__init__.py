@@ -33,12 +33,12 @@ def extract(base_path=None, out_path=None, config_file=None):
 
         snippets = (
             snippet
-            for f in util.find_files(base_path / conf["root"], conf["glob"])
-            for snippet in core.extract_from_file(f, conf)
+            for f in util.list_paths(conf, base_path)
+            for snippet in core.extract_from_path(f, conf)
         )
         for snippet in snippets:
             no_snippets = False
-            dst = out_path / (snippet.name + out_ext)
+            dst = out_path / f"{conf_name}-{snippet.name}{out_ext}"
             origin = str(Path(snippet.origin).relative_to(base_path))
             logger.info(f"{origin}:{snippet.name} -> {dst}")
             processed_snippets.append((dst, snippet.name, origin, snippet.line_number))

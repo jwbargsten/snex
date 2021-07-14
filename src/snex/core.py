@@ -72,7 +72,7 @@ def get_configs(conf):
         yield (name, c)
 
 
-def extract_from_file(f, conf):
+def extract_from_path(f, conf):
     comment_prefix = re.escape(conf["comment_prefix"])
     comment_suffix = re.escape(conf["comment_suffix"])
 
@@ -95,32 +95,31 @@ def extract_from_file(f, conf):
     data = []
     params = {}
 
-    with open(f, "r") as fd:
-        for idx, line in enumerate(fd):
-            lnum = idx + 1
-            if re.search(cloak_end_re, line):
-                cloaked = False
-                continue
-            if re.search(cloak_start_re, line):
-                cloaked = True
-            if cloaked:
-                continue
+    for idx, line in util.read_path(f):
+        lnum = idx + 1
+        if re.search(cloak_end_re, line):
+            cloaked = False
+            continue
+        if re.search(cloak_start_re, line):
+            cloaked = True
+        if cloaked:
+            continue
 
-            if match := re.search(snippet_start_re, line):
-                try:
-                    params = util.construct_params(match.group(1), f, lnum)
-                    params = util.sanitize_params(params, conf["valid_param_keys"])
-                except Exception as ex:
-                    logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
-                    raise ex
-                in_snippet = True
-            if not in_snippet:
-                continue
+        if match := re.search(snippet_start_re, line):
+            try:
+                params = util.construct_params(match.group(1), f, lnum)
+                params = util.sanitize_params(params, conf["valid_param_keys"])
+            except Exception as ex:
+                logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
+                raise ex
+            in_snippet = True
+        if not in_snippet:
+            continue
 
-            data.append(line.rstrip("\n"))
-            if re.search(snippet_end_re, line):
-                in_snippet = False
-                snippets.append(Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix))
-                data = []
-                params = {}
+        data.append(line.rstrip("\n"))
+        if re.search(snippet_end_re, line):
+            in_snippet = False
+            snippets.append(Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix))
+            data = []
+            params = {}
     return snippets

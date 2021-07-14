@@ -14,6 +14,7 @@ click = "^7.1.2"
 pyhocon = "^0.3.57"
 pystache = "^0.5.4"
 pyyaml = "^5.4.1"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
