@@ -29,7 +29,13 @@ def extract(base_path=None, out_path=None, config_file=None):
         logger.info(f"output dir: {str(out_path)}")
         out_path.mkdir(exist_ok=True, parents=True)
 
-        out_ext = conf["output_ext"]
+        out_suffix = conf.get("output_ext", None)
+        if out_suffix is not None:
+            logger.warning("config option 'output_ext' is deprecated, use 'output_suffix' instead")
+        else:
+            out_suffix = conf["output_suffix"]
+
+        out_prefix = conf.get("output_prefix", f"{conf_name}-")
 
         snippets = (
             snippet
@@ -38,7 +44,7 @@ def extract(base_path=None, out_path=None, config_file=None):
         )
         for snippet in snippets:
             no_snippets = False
-            dst = out_path / f"{conf_name}-{snippet.name}{out_ext}"
+            dst = out_path / f"{out_prefix}{snippet.name}{out_suffix}"
             origin = str(Path(snippet.origin).relative_to(base_path))
             logger.info(f"{origin}:{snippet.name} -> {dst}")
             processed_snippets.append((dst, snippet.name, origin, snippet.line_number))

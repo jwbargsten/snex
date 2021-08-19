@@ -18,7 +18,7 @@ DEFAULT = {
     "snippet_end": ":endsnippet",
     "cloak_start": ":cloak",
     "cloak_end": ":endcloak",
-    "output_ext": ".md",
+    "output_suffix": ".md",
     # :endsnippet
 }
 

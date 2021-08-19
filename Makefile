@@ -5,7 +5,7 @@ date=$(shell date +%F)
 all:
 
 test:
-	. .venv/bin/activate && poetry run pytest -vvs
+	poetry run pytest -vvs
 
 build:
 	. .venv/bin/activate && poetry build
