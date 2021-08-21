@@ -84,7 +84,7 @@ The config syntax is
 
 You have 3 layers of settings in a section:
 
-1.  [the global default config](docs/snippets/global-default-config.md) in
+1.  [the global default config](docs/snippets/src-global-default-config.md) in
     `docs/snippets/global-default-config.md`
 2.  the config section `default` in your `snex.conf` file (which overwrites the global
     default).

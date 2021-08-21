@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snex"
-version = "2021.7.15"
+version = "2021.8.21"
 description = "snex - snippet extractor"
 authors = ["Joachim Bargsten <jw@bargsten.org>"]
 homepage = "https://github.com/jwbargsten/snex"
@@ -39,4 +39,3 @@ line-length = 110
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
-

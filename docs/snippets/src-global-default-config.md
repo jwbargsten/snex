@@ -2,7 +2,7 @@
 
 ```python
 "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
-"valid_param_keys": ["name", "lang"],
+"valid_param_keys": ["name", "lang", "lnum"],
 "output_path": "extracted",
 "line_prefix": "",
 "comment_prefix": "# ",
@@ -11,5 +11,5 @@
 "snippet_end": ":endsnippet",
 "cloak_start": ":cloak",
 "cloak_end": ":endcloak",
-"output_ext": ".md",
+"output_suffix": ".md",
 ```
