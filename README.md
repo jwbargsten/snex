@@ -99,21 +99,21 @@ You created a `/path/to/your/project/snex.conf` like described in the previous t
 ### From the project directory
 
     cd /path/to/your/project
-    snex
+    snex run
 
 This will read `snex.conf` in the current directory and dump the snippets into the
 configured `output_path`.
 
 ### From a different directory
 
-    snex /path/to/your/project
+    snex run /path/to/your/project
 
 This will read `/path/to/your/project/snex.conf` and dump the snippets into the
 configured `output_path`.
 
 ### From a different directory to a different snippet output directory
 
-    snex /path/to/your/project /path/custom/snippet/output/dir
+    snex run /path/to/your/project /path/custom/snippet/output/dir
 
 This will read `/path/to/your/project/snex.conf` and dump the snippets into
 `/path/custom/snippet/output/dir`.

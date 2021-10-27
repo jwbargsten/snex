@@ -49,7 +49,7 @@ def config_ls_templates_cmd():
 
 
 @click.command("generate")
-@click.argument("lang", required=False)
+@click.argument("lang", required=True)
 def config_generate_cmd(lang):
     tmpl = env.get_template(f"{lang}.snex.conf")
     print(tmpl.render())
