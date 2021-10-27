@@ -1,6 +1,7 @@
 from pyhocon import ConfigFactory, ConfigTree
 from itertools import dropwhile
 from pathlib import Path
+import os
 import logging
 import re
 import requests as rq
@@ -29,24 +30,28 @@ url_regex = re.compile(
     re.IGNORECASE,
 )
 
-value = "http://gwil.de"
-
 
 def is_url(value):
     return bool(url_regex.search(str(value)))
 
 
-def construct_params(snippet_param_match, path, lnum):
+def construct_params(snippet_param_match, path, base_path, lnum):
     data = re.split(r"\s+", snippet_param_match.strip(), maxsplit=1)
-    params = {"path": str(path), "lnum": lnum}
+    params = {"lnum": lnum}
+    if is_url(path):
+        params["fname"] = re.sub(r"^.*/", "", str(path).rstrip("/"))
+        params["path"] = path
+    else:
+        params["fname"] = Path(path).name
+        params["path"] = os.path.relpath(str(Path(path).absolute()), start=str(base_path))
     if data and data[0]:
         params["name"] = data[0]
     else:
         params["name"] = f"{str(path)}-{lnum}"
 
     extra = load("{ " + data[1] + " }", Loader=Loader) if len(data) > 1 else {}
-    x = {**extra, **params}
-    return x
+
+    return {**extra, **params}
 
 
 def read_path(path):

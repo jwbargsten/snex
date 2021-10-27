@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snex"
-version = "2021.8.21"
+version = "2021.10.26"
 description = "snex - snippet extractor"
 authors = ["Joachim Bargsten <jw@bargsten.org>"]
 homepage = "https://github.com/jwbargsten/snex"
@@ -13,9 +13,10 @@ license = "MIT"
 python = "^3.8"
 click = "^7.1.2"
 pyhocon = "^0.3.57"
-pystache = "^0.5.4"
 pyyaml = "^5.4.1"
 requests = "^2.26.0"
+chevron = "^0.14.0"
+Jinja2 = "^3.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

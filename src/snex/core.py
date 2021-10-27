@@ -1,5 +1,5 @@
 import logging
-import pystache
+import chevron
 import re
 from itertools import dropwhile
 import snex.util as util
@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 DEFAULT = {
     # :snippet global-default-config lang: python
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
-    "valid_param_keys": ["name", "lang", "lnum"],
-    "output_path": "extracted",
+    "valid_param_keys": ["name", "lang", "lnum", "fname", "path"],
+    "output_path": "snippets",
     "line_prefix": "",
     "comment_prefix": "# ",
     "comment_suffix": "",
@@ -59,7 +59,7 @@ class Snippet:
 
 
 def render_snippet(template, params, body):
-    return pystache.render(template, {**params, **{"snippet": "\n".join(body)}})
+    return chevron.render(template, {**params, **{"snippet": "\n".join(body)}})
 
 
 def get_configs(conf):
@@ -72,7 +72,7 @@ def get_configs(conf):
         yield (name, c)
 
 
-def extract_from_path(f, conf):
+def extract_from_path(f, conf, base_path):
     comment_prefix = re.escape(conf["comment_prefix"])
     comment_suffix = re.escape(conf["comment_suffix"])
 
@@ -107,7 +107,7 @@ def extract_from_path(f, conf):
 
         if match := re.search(snippet_start_re, line):
             try:
-                params = util.construct_params(match.group(1), f, lnum)
+                params = util.construct_params(match.group(1), f, base_path, lnum)
                 params = util.sanitize_params(params, conf["valid_param_keys"])
             except Exception as ex:
                 logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
@@ -119,7 +119,8 @@ def extract_from_path(f, conf):
         data.append(line.rstrip("\n"))
         if re.search(snippet_end_re, line):
             in_snippet = False
-            snippets.append(Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix))
+            s = Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix)
+            snippets.append(s)
             data = []
             params = {}
     return snippets

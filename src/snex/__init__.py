@@ -1,4 +1,4 @@
-__version__ = "2021.8.21"
+__version__ = "2021.10.26"
 
 import logging
 from pyhocon import ConfigFactory
@@ -40,7 +40,7 @@ def extract(base_path=None, out_path=None, config_file=None):
         snippets = (
             snippet
             for f in util.list_paths(conf, base_path)
-            for snippet in core.extract_from_path(f, conf)
+            for snippet in core.extract_from_path(f, conf, base_path)
         )
         for snippet in snippets:
             no_snippets = False
