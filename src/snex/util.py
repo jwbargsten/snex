@@ -103,6 +103,8 @@ def find_files(root, glob):
 
 
 def det_indent_lvl(lines):
+    if not lines:
+        return 0
     return min([len(x) - len(x.lstrip()) for x in lines if x])
 
 

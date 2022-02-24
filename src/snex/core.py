@@ -88,12 +88,11 @@ def extract_from_path(f, conf, base_path):
     snippet_start_re = f"^\\s*{comment_prefix}{snippet_start}(.*){comment_suffix}$"
     snippet_end_re = f"^\\s*{comment_prefix}{snippet_end}{comment_suffix}$"
 
-    snippets = []
+    result_snippets = []
 
-    in_snippet = False
     cloaked = False
-    data = []
-    params = {}
+
+    tmp_snippets = []
 
     for idx, line in util.read_path(f):
         lnum = idx + 1
@@ -105,22 +104,25 @@ def extract_from_path(f, conf, base_path):
         if cloaked:
             continue
 
+        if re.search(snippet_end_re, line):
+            snippet = tmp_snippets.pop()
+            snippet["data"].append(line.rstrip("\n"))
+            s = Snippet.from_raw_data(snippet["params"], snippet["data"], origin=f, prefix=line_prefix)
+            result_snippets.append(s)
+            continue
+
         if match := re.search(snippet_start_re, line):
             try:
                 params = util.construct_params(match.group(1), f, base_path, lnum)
-                params = util.sanitize_params(params, conf["valid_param_keys"])
+                tmp_snippets.append(
+                    {"params": util.sanitize_params(params, conf["valid_param_keys"]), "data": [line]}
+                )
             except Exception as ex:
                 logger.error(f"could not parse snippet params: {line} in file {f}:{lnum}")
                 raise ex
-            in_snippet = True
-        if not in_snippet:
             continue
 
-        data.append(line.rstrip("\n"))
-        if re.search(snippet_end_re, line):
-            in_snippet = False
-            s = Snippet.from_raw_data(params, data, origin=f, prefix=line_prefix)
-            snippets.append(s)
-            data = []
-            params = {}
-    return snippets
+        for snippet in tmp_snippets:
+            snippet["data"].append(line.rstrip("\n"))
+
+    return result_snippets
