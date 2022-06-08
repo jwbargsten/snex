@@ -57,65 +57,61 @@ The output template is parsed as [mustache template](https://mustache.github.io/
 
 ## Setup
 
-create a snex.conf in the root directory of a project you want to create snippets from:
+create a snex.conf.yaml in the root directory of a project you want to create snippets from:
 
-    config {
-      default {
-        output_path: "snippets"
-        comment_prefix: "# "
-        comment_suffix: ""
-      }
+```yaml
+default:
+  output_path: "snippets"
+  comment_prefix: "# "
+  comment_suffix: ""
 
-      src {
-        lang: "python"
-        root: "src"
-        glob: "**/*.py"
-      }
-      github {
-        comment_prefix: "# "
-        lang: "python"
-        path: "https://raw.githubusercontent.com/jwbargsten/snex/master/src/snex/core.py"
-      }
-    }
+src:
+  lang: "python"
+  root: "src"
+  glob: "**/*.py"
 
-The config syntax is
-[HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md), under the hood
-[pyhocon](https://github.com/chimpler/pyhocon).
+github:
+  comment_prefix: "# "
+  lang: "python"
+  path: "https://raw.githubusercontent.com/jwbargsten/snex/master/src/snex/core.py"
+```
+
+The config syntax is YAML.
 
 You have 3 layers of settings in a section:
 
 1.  [the global default config](docs/snippets/src-global-default-config.md) in
     `docs/snippets/global-default-config.md`
-2.  the config section `default` in your `snex.conf` file (which overwrites the global
+2.  the config section `default` in your `snex.conf.yaml` file (which overwrites the global
     default).
-3.  the specific config section in your `snex.conf` (the section name is prefix for
+3.  the specific config section in your `snex.conf.yaml` (the section name is prefix for
     snippets `default` is reserved.). The configuration in a specific section overwrites
     the default section which overwrites the global default config.
 
 ## Run
 
-You created a `/path/to/your/project/snex.conf` like described in the previous topic.
+You created a `/path/to/your/project/snex.conf.yaml` like described in the previous topic.
 
 ### From the project directory
 
     cd /path/to/your/project
     snex run
 
-This will read `snex.conf` in the current directory and dump the snippets into the
+This will read `snex.conf.yaml` in the current directory and dump the snippets into the
 configured `output_path`.
 
 ### From a different directory
 
     snex run /path/to/your/project
 
-This will read `/path/to/your/project/snex.conf` and dump the snippets into the
+This will read `/path/to/your/project/snex.conf.yaml` and dump the snippets into the
 configured `output_path`.
 
 ### From a different directory to a different snippet output directory
 
     snex run /path/to/your/project /path/custom/snippet/output/dir
 
-This will read `/path/to/your/project/snex.conf` and dump the snippets into
+This will read `/path/to/your/project/snex.conf.yaml` and dump the snippets into
 `/path/custom/snippet/output/dir`.
 
 **TAKE CARE**

@@ -45,13 +45,13 @@ def run_cmd(base_path, out_path, config_file, echo):
 @click.command("ls-templates")
 def config_ls_templates_cmd():
     for t in env.list_templates():
-        print(re.sub(r"\.snex\.conf", "", t))
+        print(re.sub(r"\.snex\.conf.yaml", "", t))
 
 
 @click.command("generate")
 @click.argument("lang", required=True)
 def config_generate_cmd(lang):
-    tmpl = env.get_template(f"{lang}.snex.conf")
+    tmpl = env.get_template(f"{lang}.snex.conf.yaml")
     print(tmpl.render())
 
 

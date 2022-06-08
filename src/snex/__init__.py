@@ -1,7 +1,6 @@
 __version__ = "2021.10.26"
 
 import logging
-from pyhocon import ConfigFactory
 import snex.core as core
 import snex.util as util
 from pathlib import Path
@@ -14,11 +13,11 @@ def extract(base_path=None, out_path=None, config_file=None):
         base_path = Path()
 
     if config_file is None:
-        config_file = base_path / "snex.conf"
+        config_file = base_path / "snex.conf.yaml"
 
     processed_snippets = []
     logger.info(f"using config file {str(config_file)}")
-    conf_root = ConfigFactory.parse_file(config_file)
+    conf_root = util.read_yaml(config_file)
     no_snippets = True
     for conf_name, conf in core.get_configs(conf_root):
         logger.info(f"processing config {conf_name}")
@@ -29,11 +28,7 @@ def extract(base_path=None, out_path=None, config_file=None):
         logger.info(f"output dir: {str(out_path)}")
         out_path.mkdir(exist_ok=True, parents=True)
 
-        out_suffix = conf.get("output_ext", None)
-        if out_suffix is not None:
-            logger.warning("config option 'output_ext' is deprecated, use 'output_suffix' instead")
-        else:
-            out_suffix = conf["output_suffix"]
+        out_suffix = conf["output_suffix"]
 
         out_prefix = conf.get("output_prefix", f"{conf_name}-")
 

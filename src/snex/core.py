@@ -63,10 +63,9 @@ def render_snippet(template, params, body):
 
 
 def get_configs(conf):
-    configs = conf["config"]
-    default = configs["default"] if "default" in configs else None
-    for name in [n for n in configs if not n == "default"]:
-        c = util.merge_with_default_conf(configs[name], default, global_default=DEFAULT)
+    default = conf["default"] if "default" in conf else None
+    for name in [n for n in conf if not n == "default"]:
+        c = util.merge_with_default_conf(conf[name], default, global_default=DEFAULT)
         # prevent defining a global name for all snippets in the config
         c.pop("name", None)
         yield (name, c)

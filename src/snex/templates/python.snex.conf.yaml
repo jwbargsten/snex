@@ -1,0 +1,6 @@
+config: 
+  src: 
+    comment_prefix: # 
+    lang: python
+    root: src
+    glob: **/*.py

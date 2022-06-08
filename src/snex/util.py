@@ -1,4 +1,3 @@
-from pyhocon import ConfigFactory, ConfigTree
 from itertools import dropwhile
 from pathlib import Path
 import os
@@ -6,12 +5,7 @@ import logging
 import re
 import requests as rq
 
-from yaml import load, dump
-
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
+from yaml import safe_load
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +29,11 @@ def is_url(value):
     return bool(url_regex.search(str(value)))
 
 
+def read_yaml(f):
+    with open(f, "r") as fd:
+        return safe_load(fd)
+
+
 def construct_params(snippet_param_match, path, base_path, lnum):
     data = re.split(r"\s+", snippet_param_match.strip(), maxsplit=1)
     params = {"lnum": lnum}
@@ -43,13 +42,15 @@ def construct_params(snippet_param_match, path, base_path, lnum):
         params["path"] = path
     else:
         params["fname"] = Path(path).name
-        params["path"] = os.path.relpath(str(Path(path).absolute()), start=str(base_path))
+        params["path"] = os.path.relpath(
+            str(Path(path).absolute()), start=str(base_path)
+        )
     if data and data[0]:
         params["name"] = data[0]
     else:
         params["name"] = f"{str(path)}-{lnum}"
 
-    extra = load("{ " + data[1] + " }", Loader=Loader) if len(data) > 1 else {}
+    extra = safe_load("{ " + data[1] + " }") if len(data) > 1 else {}
 
     return {**extra, **params}
 
@@ -116,10 +117,8 @@ def merge_with_default_conf(conf, default_conf=None, global_default=None):
     if global_default is None:
         global_default = {}
     if default_conf is None:
-        default_conf = ConfigTree()
-
-    tmp = ConfigTree.merge_configs(ConfigFactory.from_dict(global_default), default_conf, copy_trees=True)
-    return ConfigTree.merge_configs(tmp, conf)
+        default_conf = {}
+    return {**global_default, **default_conf, **conf}
 
 
 def is_empty(x):
