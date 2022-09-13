@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snex"
-version = "2022.06.08"
+version = "3000.1.1"
 description = "snex - snippet extractor"
 authors = ["Joachim Bargsten <jw@bargsten.org>"]
 homepage = "https://github.com/jwbargsten/snex"
@@ -10,15 +10,15 @@ documentation = "https://github.com/jwbargsten/snex"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-click = "^7.1.2"
-pyyaml = "^5.4.1"
-requests = "^2.26.0"
-chevron = "^0.14.0"
-Jinja2 = "^3.0.2"
+python = ">=3.8"
+click = ">=8.0.0"
+pyyaml = ">=5.4.1"
+requests = ">=2.26.0"
+chevron = ">=0.14.0"
+Jinja2 = ">=3.0.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = ">=5.2"
 coverage = {extras = ["toml"], version = "^5.4"}
 pytest-cov = "^2.11.1"
 

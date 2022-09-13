@@ -1,4 +1,4 @@
-__version__ = "2021.10.26"
+__version__ = "3000.1.1"
 
 import logging
 import snex.core as core

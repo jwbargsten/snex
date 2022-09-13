@@ -42,9 +42,7 @@ def construct_params(snippet_param_match, path, base_path, lnum):
         params["path"] = path
     else:
         params["fname"] = Path(path).name
-        params["path"] = os.path.relpath(
-            str(Path(path).absolute()), start=str(base_path)
-        )
+        params["path"] = os.path.relpath(str(Path(path).absolute()), start=str(base_path))
     if data and data[0]:
         params["name"] = data[0]
     else:

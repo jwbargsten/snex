@@ -1,0 +1,6 @@
+3000.1.1  2022-09-13  Joachim Bargsten  <jw@bargsten.org>
+  - Switch to semantic versioning. Because dates were used before, we start with 3000 as major version.
+  - BREAKING CHANGE: switch from HOCON to yaml as config file format. The
+    reliance on https://github.com/chimpler/pyhocon as dependency was not worth
+    it. With yaml we shave off quite some deps without any impact to the
+    expressiveness of the config file.
