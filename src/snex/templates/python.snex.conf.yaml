@@ -1,5 +1,10 @@
+# :snippet snex-config-example
+default:
+  output_path: "snippets"
+
 src: 
   comment_prefix: "# "
   lang: python
   root: src
   glob: "**/*.py"
+# :endsnippet
