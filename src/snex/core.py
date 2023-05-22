@@ -57,6 +57,15 @@ class Snippet:
     def __repr__(self):
         return f"Snippet({self.params!r}, {self.head!r}, {self.body!r}, {self.tail!r}, {self.origin!r})"
 
+    def as_dict(self):
+        return {
+            "params": self.params,
+            "head": self.head,
+            "body": self.body,
+            "tail": self.tail,
+            "origin": self.origin,
+        }
+
 
 def render_snippet(template, params, body):
     return chevron.render(template, {**params, **{"snippet": "\n".join(body)}})

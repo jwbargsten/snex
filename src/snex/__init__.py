@@ -48,3 +48,33 @@ def extract(base_path=None, out_path=None, config_file=None):
     if no_snippets:
         logger.info("no snippets found")
     return processed_snippets
+
+
+def visit(base_path=None, config_file=None):
+    if base_path is None:
+        base_path = Path()
+
+    if config_file is None:
+        config_file = base_path / "snex.conf.yaml"
+
+    logger.info(f"using config file {str(config_file)}")
+    conf_root = util.read_yaml(config_file)
+    for conf_name, conf in core.get_configs(conf_root):
+        logger.info(f"processing config {conf_name}")
+
+        logger.info(f"working dir: {str(base_path)}")
+
+        out_suffix = conf["output_suffix"]
+
+        out_prefix = conf.get("output_prefix", f"{conf_name}-")
+
+        snippets = (
+            snippet
+            for f in util.list_paths(conf, base_path)
+            for snippet in core.extract_from_path(f, conf, base_path)
+        )
+        for snippet in snippets:
+            dst = f"{out_prefix}{snippet.name}{out_suffix}"
+            origin = str(Path(snippet.origin).relative_to(base_path))
+            rendered = core.render_snippet(conf["output_template"], {**conf, **snippet.params}, snippet.body)
+            yield {**snippet, "dst": dst, "src": origin, rendered: rendered}
