@@ -1,6 +1,7 @@
 from itertools import dropwhile
 from pathlib import Path
 import os
+import subprocess as sp
 import logging
 import re
 import requests as rq
@@ -121,3 +122,24 @@ def merge_with_default_conf(conf, default_conf=None, global_default=None):
 
 def is_empty(x):
     return not bool(x)
+
+
+def run_cmd(cmd, env=None, capture=False, in_: str = None, verbose=False):
+    if in_ is not None and isinstance(in_, str):
+        in_ = bytes(in_, "utf-8")
+
+    if env is None:
+        env = {}
+    env = {**os.environ, **env}
+
+    try:
+        res = sp.run(cmd, capture_output=capture, input=in_, env=env, check=True)
+    except sp.CalledProcessError as ex:
+        if ex.stdout is not None and verbose:
+            logger.error("CMD STDOUT\n" + ex.output.decode("utf-8"))
+        if ex.stderr is not None and verbose:
+            logger.error("CMD STDERR\n" + ex.stderr.decode("utf-8"))
+        raise sp.CalledProcessError(ex.returncode, ex.cmd, ex.output, ex.stderr) from None
+    if not capture:
+        return None
+    return (res.stdout.decode("utf-8"), res.stderr.decode("utf-8"))

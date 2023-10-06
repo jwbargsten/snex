@@ -1,5 +1,7 @@
 from jinja2 import Environment, PackageLoader
 import re
+import json
+from snex.util import run_cmd as run_shell_cmd
 import click
 import logging
 from pathlib import Path
@@ -55,6 +57,44 @@ def config_generate_cmd(lang):
     print(tmpl.render())
 
 
+@click.command("gist")
+@click.argument("base_path", default=".", type=click.Path(exists=True))
+@click.option("--config_file", type=click.Path(exists=True, dir_okay=False))
+def gist_cmd(base_path, config_file):
+    base_path = Path(base_path)
+    gists_path = base_path / ".github" / "snex-gists.json"
+
+    gists = {}
+    if gists_path.exists():
+        gists = json.loads(gists_path.read_text())
+
+    for snippet in snex.visit(base_path, config_file):
+        if not snippet["snippet"].params.get("gist", None):
+            logger.info(f"skipping {snippet['dst']}")
+            continue
+
+        gist_prefix = snippet["conf"].get("gist_prefix", "")
+        dst = f"{gist_prefix}{snippet['dst']}"
+        if dst in gists:
+            out, err = run_shell_cmd(
+                ["gh", "gist", "edit", gists[dst], "-", "-a", dst], capture=True, in_=snippet["rendered"]
+            )
+            logger.info("\n" + err)
+            logger.info(out)
+        else:
+            out, err = run_shell_cmd(
+                ["gh", "gist", "create", "-f", dst], capture=True, in_=snippet["rendered"]
+            )
+            logger.info("\n" + err)
+            logger.info(out)
+            gists[dst] = out.strip()
+
+    if gists:
+        gists_path.parent.mkdir(exist_ok=True)
+        gists_path.write_text(json.dumps(gists, indent=2))
+
+
+main.add_command(gist_cmd)
 main.add_command(run_cmd)
 main.add_command(config_grp)
 config_grp.add_command(config_generate_cmd)

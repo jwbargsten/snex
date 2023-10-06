@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 DEFAULT = {
     # :snippet global-default-config lang: python
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
-    "valid_param_keys": ["name", "lang", "lnum", "fname", "path"],
+    "valid_param_keys": ["name", "lang", "lnum", "fname", "path", "gist"],
     "output_path": "snippets",
     "line_prefix": "",
     "comment_prefix": "# ",

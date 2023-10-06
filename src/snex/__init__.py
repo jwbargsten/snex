@@ -77,4 +77,12 @@ def visit(base_path=None, config_file=None):
             dst = f"{out_prefix}{snippet.name}{out_suffix}"
             origin = str(Path(snippet.origin).relative_to(base_path))
             rendered = core.render_snippet(conf["output_template"], {**conf, **snippet.params}, snippet.body)
-            yield {**snippet, "dst": dst, "src": origin, rendered: rendered}
+            yield {
+                "snippet": snippet,
+                "prefix": out_prefix,
+                "suffix": out_suffix,
+                "dst": dst,
+                "src": origin,
+                "rendered": rendered,
+                "conf": conf,
+            }
