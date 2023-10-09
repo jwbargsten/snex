@@ -51,7 +51,18 @@ def construct_params(snippet_param_match, path, base_path, lnum):
 
     extra = safe_load("{ " + data[1] + " }") if len(data) > 1 else {}
 
+    extra["tags"] = parse_tags(extra.get("tags"))
+
     return {**extra, **params}
+
+
+def parse_tags(tags):
+    if not tags:
+        return set()
+
+    if isinstance(tags, str):
+        return set(tags.split(","))
+    return set(tags)
 
 
 def read_path(path):

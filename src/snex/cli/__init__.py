@@ -69,12 +69,12 @@ def gist_cmd(base_path, config_file):
         gists = json.loads(gists_path.read_text())
 
     for snippet in snex.visit(base_path, config_file):
-        if not snippet["snippet"].params.get("gist", None):
+        if "gist" not in snippet["snippet"].params["tags"] or "gist" not in snippet["conf"]["tags"]:
             logger.info(f"skipping {snippet['dst']}")
             continue
 
-        gist_prefix = snippet["conf"].get("gist_prefix", "")
-        dst = f"{gist_prefix}{snippet['dst']}"
+        dst = f"{snippet['dst']}"
+        logger.info(f"publishing gist {dst}")
         if dst in gists:
             out, err = run_shell_cmd(
                 ["gh", "gist", "edit", gists[dst], "-", "-a", dst], capture=True, in_=snippet["rendered"]

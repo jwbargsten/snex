@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 DEFAULT = {
     # :snippet global-default-config lang: python
     "output_template": "```{{lang}}\n{{{snippet}}}\n```\n",
-    "valid_param_keys": ["name", "lang", "lnum", "fname", "path", "gist"],
+    "valid_param_keys": ["name", "lang", "lnum", "fname", "path", "tags"],
     "output_path": "snippets",
     "line_prefix": "",
     "comment_prefix": "# ",
@@ -71,12 +71,14 @@ def render_snippet(template, params, body):
     return chevron.render(template, {**params, **{"snippet": "\n".join(body)}})
 
 
-def get_configs(conf):
+def construct_config(conf):
     default = conf["default"] if "default" in conf else None
     for name in [n for n in conf if not n == "default"]:
         c = util.merge_with_default_conf(conf[name], default, global_default=DEFAULT)
         # prevent defining a global name for all snippets in the config
         c.pop("name", None)
+
+        c["tags"] = util.parse_tags(c.get("tags"))
         yield (name, c)
 
 

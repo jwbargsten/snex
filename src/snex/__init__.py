@@ -3,6 +3,7 @@ __version__ = "3000.1.1"
 import logging
 import snex.core as core
 import snex.util as util
+import fp
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ def extract(base_path=None, out_path=None, config_file=None):
     logger.info(f"using config file {str(config_file)}")
     conf_root = util.read_yaml(config_file)
     no_snippets = True
-    for conf_name, conf in core.get_configs(conf_root):
+    for conf_name, conf in core.construct_config(conf_root):
         logger.info(f"processing config {conf_name}")
 
         if out_path is None:
@@ -49,17 +50,19 @@ def extract(base_path=None, out_path=None, config_file=None):
         logger.info("no snippets found")
     return processed_snippets
 
+def load_config(f, base):
+    if f is None:
+        f = base / "snex.conf.yaml"
+
+    logger.info(f"using config file {str(f)}")
+    return util.read_yaml(f)
 
 def visit(base_path=None, config_file=None):
     if base_path is None:
         base_path = Path()
 
-    if config_file is None:
-        config_file = base_path / "snex.conf.yaml"
-
-    logger.info(f"using config file {str(config_file)}")
-    conf_root = util.read_yaml(config_file)
-    for conf_name, conf in core.get_configs(conf_root):
+    
+    for conf_name, conf in core.construct_config(conf_root):
         logger.info(f"processing config {conf_name}")
 
         logger.info(f"working dir: {str(base_path)}")
@@ -76,6 +79,9 @@ def visit(base_path=None, config_file=None):
         for snippet in snippets:
             dst = f"{out_prefix}{snippet.name}{out_suffix}"
             origin = str(Path(snippet.origin).relative_to(base_path))
+            if not _is_tag_match(conf, snippet.params):
+                logger.info(f"Tags don't match, skipping {dst}")
+                continue
             rendered = core.render_snippet(conf["output_template"], {**conf, **snippet.params}, snippet.body)
             yield {
                 "snippet": snippet,
@@ -86,3 +92,7 @@ def visit(base_path=None, config_file=None):
                 "rendered": rendered,
                 "conf": conf,
             }
+
+
+def _is_tag_match(conf, params):
+    return not conf["tags"] or conf["tags"] & params["tags"]
