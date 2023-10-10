@@ -74,20 +74,24 @@ def gist_cmd(base_path, config_file):
             continue
 
         dst = f"{snippet['dst']}"
-        logger.info(f"publishing gist {dst}")
         if dst in gists:
+            logger.info(f"publishing gist (u) {dst}")
             out, err = run_shell_cmd(
-                ["gh", "gist", "edit", gists[dst], "-", "-a", dst], capture=True, in_=snippet["rendered"]
+                ["gh", "gist", "edit", gists[dst], "-", "-a", dst],
+                capture=True,
+                in_=snippet["rendered"],
+                verbose=True,
             )
-            logger.info("\n" + err)
-            logger.info(out)
         else:
+            logger.info(f"publishing gist (c) {dst}")
             out, err = run_shell_cmd(
-                ["gh", "gist", "create", "-f", dst], capture=True, in_=snippet["rendered"]
+                ["gh", "gist", "create", "-f", dst], capture=True, in_=snippet["rendered"], verbose=True
             )
-            logger.info("\n" + err)
-            logger.info(out)
             gists[dst] = out.strip()
+        if err.strip():
+            logger.info("\n" + err)
+        if out.strip():
+            logger.info(out)
 
     if gists:
         gists_path.parent.mkdir(exist_ok=True)

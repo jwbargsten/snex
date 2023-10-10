@@ -3,7 +3,6 @@ __version__ = "3000.1.1"
 import logging
 import snex.core as core
 import snex.util as util
-import fp
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -50,6 +49,7 @@ def extract(base_path=None, out_path=None, config_file=None):
         logger.info("no snippets found")
     return processed_snippets
 
+
 def load_config(f, base):
     if f is None:
         f = base / "snex.conf.yaml"
@@ -57,15 +57,16 @@ def load_config(f, base):
     logger.info(f"using config file {str(f)}")
     return util.read_yaml(f)
 
+
 def visit(base_path=None, config_file=None):
     if base_path is None:
         base_path = Path()
+    logger.info(f"working dir: {str(base_path)}")
 
-    
+    conf_root = load_config(config_file, base_path)
+
     for conf_name, conf in core.construct_config(conf_root):
         logger.info(f"processing config {conf_name}")
-
-        logger.info(f"working dir: {str(base_path)}")
 
         out_suffix = conf["output_suffix"]
 
