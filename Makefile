@@ -1,19 +1,22 @@
 .PHONY: all clean test
+.DEFAULT_GOAL := help
 
-date=$(shell date +%F)
+test: ## run tests
+	pytest tests/
 
-all:
+tags: ## build a ctags file for jwb's crappy editor
+	ctags --languages=python -f tags -R src tests
 
-test:
-	poetry run pytest -vvs
-
-build:
-	. .venv/bin/activate && poetry build
 run:
-	poetry run snex --config_file ./snex.repo.conf
+	snex --config_file ./snex.repo.conf
 
-lint: ## run mypy and flake8 to check the code
-	poetry run flake8 src tests
+lint: ## lint the source code
+	ruff check src/ tests/
+	ruff format --check src/ tests/
 
-fmt: ## run black to format the code
-	poetry run black src tests
+fmt: ## format the source code with ruff
+	ruff format src/ tests/
+	ruff check --fix src/ tests/
+
+help: ## this help
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9._-]+:.*?## / {printf "\033[1m\033[36m%-38s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

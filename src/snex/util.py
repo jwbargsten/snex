@@ -5,6 +5,7 @@ import subprocess as sp
 import logging
 import re
 import requests as rq
+import pathspec
 
 from yaml import safe_load
 
@@ -86,9 +87,20 @@ def list_paths(conf, base_path):
                 p = base_path / p
             if p.is_file:
                 yield p
+    elif "pathspec" in conf:
+        spec = pathspec.PathSpec.from_lines("gitwildmatch", conf["pathspec"])
+        matches = spec.match_tree(base_path)
+        for m in matches:
+            yield m
     else:
-        for f in find_files(base_path / conf["root"], conf["glob"]):
-            yield f
+        if isinstance(conf["glob"], str):
+            globs = [conf["glob"]]
+        else:
+            globs = conf["glob"]
+
+        for g in globs:
+            for f in find_files(base_path / conf["root"], g, conf["ignore"]):
+                yield f
 
 
 # :snippet def-sanitize-for-filename
@@ -106,7 +118,7 @@ def sanitize_params(params, valid_keys):
     return {k: v for k, v in params.items() if k in valid_keys}
 
 
-def find_files(root, glob):
+def find_files(root, glob, ignore):
     logger.info(f"{root} -> {glob}")
     for p in Path(root).glob(glob):
         if p.is_file():

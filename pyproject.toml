@@ -1,43 +1,48 @@
-[tool.poetry]
-name = "snex"
-version = "3000.1.1"
-description = "snex - snippet extractor"
-authors = ["Joachim Bargsten <jw@bargsten.org>"]
-homepage = "https://github.com/jwbargsten/snex"
-readme = "README.md"
-repository = "https://github.com/jwbargsten/snex"
-documentation = "https://github.com/jwbargsten/snex"
-license = "MIT"
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+norecursedirs = [
+    "tests/kit"
+]
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-click = ">=8.0.0"
-pyyaml = ">=5.4.1"
-requests = ">=2.26.0"
-chevron = ">=0.14.0"
-Jinja2 = ">=3.0.2"
-
-[tool.poetry.dev-dependencies]
-pytest = ">=5.2"
-coverage = {extras = ["toml"], version = "^5.4"}
-pytest-cov = "^2.11.1"
-
-[tool.coverage.report]
-show_missing = true
-
-[tool.coverage.paths]
-source = ["src"]
-
-[tool.coverage.run]
-branch = true
-source = ["snex"]
-
-[tool.poetry.scripts]
-snex = "snex.cli:main"
-
-[tool.black]
-line-length = 110
+[tool.ruff]
+line-length = 111
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["setuptools", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+readme = "README.md"
+name = "snex"
+dynamic = ["version"]
+description = "snex - snippet extractor"
+authors = [{ name = "Joachim Bargsten", email = "jw@bargsten.org" }]
+dependencies = [
+    "requests",
+    "pyyaml",
+    "more-itertools",
+    "click>=8.0.0",
+    "pyyaml>=5.4.1",
+    "requests>=2.26.0",
+    "chevron>=0.14.0",
+    "Jinja2>=3.0.2",
+    "pathspec"
+]
+license = { text = "MIT License" }
+
+[project.urls]
+homepage = "https://github.com/jwbargsten/snex"
+repository = "https://github.com/jwbargsten/snex"
+documentation = "https://github.com/jwbargsten/snex"
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff"
+]
+
+[project.scripts]
+snex = "snex.cli:main"
+
+[tool.setuptools_scm]
