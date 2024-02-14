@@ -91,7 +91,7 @@ def list_paths(conf, base_path):
         spec = pathspec.PathSpec.from_lines("gitwildmatch", conf["pathspec"])
         matches = spec.match_tree(base_path)
         for m in matches:
-            yield m
+            yield base_path / m
     else:
         if isinstance(conf["glob"], str):
             globs = [conf["glob"]]
