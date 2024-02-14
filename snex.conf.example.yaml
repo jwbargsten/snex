@@ -1,0 +1,21 @@
+default:
+  # templating done via https://pypi.org/project/chevron/
+  output_template: |
+    ```{{{lang}}}
+    {{{comment_prefix}}}{{{path}}}{{{comment_suffix}}}
+    {{{snippet}}}
+    ```
+  comment_prefix: "# "
+  root: .
+# pathspec syntax: https://pypi.org/project/pathspec/
+py:
+  lang: python
+  pathspec: 
+  - "*.py"
+  - "!.*"
+yaml:
+  lang: yaml
+  pathspec:
+  - "*.yml"
+  - "*.yaml"
+  - "!.*"
