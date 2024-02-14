@@ -16,30 +16,44 @@ readme = "README.md"
 name = "snex"
 dynamic = ["version"]
 description = "snex - snippet extractor"
-authors = [{ name = "Joachim Bargsten", email = "jw@bargsten.org" }]
+authors = [
+    { name = "Joachim Bargsten", email = "jw@bargsten.org" }
+]
+requires-python = ">=3.10"
 dependencies = [
     "requests",
     "pyyaml",
     "more-itertools",
     "click>=8.0.0",
-    "pyyaml>=5.4.1",
-    "requests>=2.26.0",
-    "chevron>=0.14.0",
-    "Jinja2>=3.0.2",
+    "pyyaml",
+    "requests",
+    "chevron",
+    "Jinja2",
     "pathspec"
 ]
-license = { text = "MIT License" }
+# https://spdx.org/licenses/
+license = { text = "Apache-2.0" }
 
 [project.urls]
 homepage = "https://github.com/jwbargsten/snex"
 repository = "https://github.com/jwbargsten/snex"
 documentation = "https://github.com/jwbargsten/snex"
-requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = [
+    "setuptools_scm",
     "pytest>=7",
-    "ruff"
+    "ruff",
+    "mypy",
+]
+build = [
+    "snex[dev]",
+    "build",
+    "twine",
+    "tomli",
+    "check-manifest",
+    "check-wheel-contents",
+    "pyroma"
 ]
 
 [project.scripts]
