@@ -99,7 +99,7 @@ def list_paths(conf, base_path):
             globs = conf["glob"]
 
         for g in globs:
-            for f in find_files(base_path / conf["root"], g, conf["ignore"]):
+            for f in find_files(base_path / conf["root"], g):
                 yield f
 
 
@@ -118,7 +118,7 @@ def sanitize_params(params, valid_keys):
     return {k: v for k, v in params.items() if k in valid_keys}
 
 
-def find_files(root, glob, ignore):
+def find_files(root, glob):
     logger.info(f"{root} -> {glob}")
     for p in Path(root).glob(glob):
         if p.is_file():
